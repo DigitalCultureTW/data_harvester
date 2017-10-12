@@ -1,0 +1,9 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}********************************
+${licensePrefix}TWDC Data Harvester
+${licensePrefix}********************************
+<#if licenseLast??>
+${licenseLast}
+</#if>

@@ -1,0 +1,24 @@
+{
+  "candies": [
+    {
+      "name": "jquery",
+      "version": "1.10.0-20170726",
+      "lastUpdateTimestamp": 1501669704000,
+      "modelVersion": "unknown",
+      "transpilerVersion": "2.0.0",
+      "jsOutputDirPath": "C:\\Users\\Jonathan Chang\\Documents\\NetBeansProjects\\TWDC Data Harvester\\webapp",
+      "jsDirPath": "META-INF/resources/webjars/jquery/1.10.0-20170726",
+      "jsFilesPaths": []
+    },
+    {
+      "name": "jsweet-core",
+      "version": "6-SNAPSHOT",
+      "lastUpdateTimestamp": 1496040138000,
+      "modelVersion": "unknown",
+      "transpilerVersion": "2.0.0",
+      "jsOutputDirPath": "C:\\Users\\Jonathan Chang\\Documents\\NetBeansProjects\\TWDC Data Harvester\\webapp",
+      "jsDirPath": "META-INF/resources/webjars/jsweet-core/6-SNAPSHOT",
+      "jsFilesPaths": []
+    }
+  ]
+}
