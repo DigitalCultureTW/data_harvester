@@ -17,11 +17,14 @@
  */
 package tw.digitalculture.data;
 
+import tw.digitalculture.data.query.TWDC;
 import def.js.JSON;
 import java.util.List;
 import java.util.function.Consumer;
+import tw.digitalculture.data.interfaces.Query;
 import tw.digitalculture.data.model.Record_Query;
 import tw.digitalculture.data.model.Result;
+import tw.digitalculture.data.query.IdeaSQL;
 
 /**
  *
@@ -30,9 +33,13 @@ import tw.digitalculture.data.model.Result;
 public class DataCenter {
 
     TWDC twdc;
+    IdeaSQL ideasql;
+    List<Query> queries;
 
     public DataCenter(int limit, Consumer<Boolean> callback) {
         this.twdc = new TWDC(limit, callback);
+        this.ideasql = new IdeaSQL();
+        this.queries.add(twdc);
     }
 
     public void getResult(JSON data, Consumer<Result> callback) {
