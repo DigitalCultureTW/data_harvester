@@ -22,7 +22,7 @@ import def.dom.XMLHttpRequest;
 import def.js.Array;
 import def.js.JSON;
 import java.util.function.Consumer;
-import tw.digitalculture.data.Config.DATA;
+import tw.digitalculture.data.interfaces.Record;
 
 /**
  *
@@ -30,52 +30,21 @@ import tw.digitalculture.data.Config.DATA;
  */
 public class IDEASQL_JSON {
 
-    private static final IDEASQL_JSON instance = new IDEASQL_JSON();
-
-    public static IDEASQL_JSON getInstance() {
-        return instance;
-    }
-
-    public void fetch(String url, Consumer<Array<JSON>> callback) {
+    public static void fetch(String url, Consumer<Array<JSON>> callback) {
         XMLHttpRequest xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.onload = (Event e) -> {
 //            System.out.println(e);
 //            String body="";
             String data = xhr.response.toString();
-            callback.accept((Array<JSON>) JSON.parse(data));
+            Array<JSON> result = (Array<JSON>) JSON.parse(data);
+            System.out.println("result=" + result.length);
+            callback.accept(result);
             return null;
         };
         xhr.send();
     }
 
-    public Record createRecord(String id, String content, String img_link, JSON detail_infos) {
-        return new Record(id, content, img_link, detail_infos);
-    }
-
-    public class Record {
-
-        public String id;
-        public String content;
-        public String img_link;
-        public JSON detail_infos;
-        public String title;
-        public boolean img_link_valid = false;
-
-        public Record(String id, String content, String img_link, JSON detail_infos) {
-            this.id = id;
-            this.content = content.replaceAll("\\n", " ");
-            this.img_link = img_link;
-            this.detail_infos = detail_infos;
-            System.out.println("id = " + id);
-            System.out.println("content = " + content);
-            System.out.println("img_link = " + img_link);
-            System.out.println("detail_infos.title: " + detail_infos.$get("title"));
-//            this.title = detail_infos.$get("title").replaceAll("\\n", " ");
-            this.img_link_valid = false;
-        }
-    ;
-}
 //                    http.get(url, (res) => {
 //                var body = '';
 //                res.on('data', (chunk) => {
@@ -117,8 +86,8 @@ public class IDEASQL_JSON {
             });
         };
 
-        methods.write = function (path, content) {
-            var str = JSON.stringify(content, null, 4);
+        methods.write = function (path, description) {
+            var str = JSON.stringify(description, null, 4);
             fs.writeFile(path, str, (err) => {
                 if (err)
                     console.log(err);

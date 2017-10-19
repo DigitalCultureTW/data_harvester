@@ -51,32 +51,34 @@ public class Demo {
 
                     dc.getResult(data, (Result result) -> {
                         List<Record_Query> rs = result.record_set;
+                        HTMLElement table = document.createElement("table");
+                        $(table).css("border", "1px solid grey").css("text-align", "left")
+                                .css("display", "block");
                         rs.forEach((Record_Query r) -> {
-                            HTMLElement div = Globals.document.createElement("div");
                             HTMLImageElement img = (HTMLImageElement) document.createElement("img");
                             img.src = r.img_url;
                             img.onload = (evt) -> {
-                                $(div).text(r.content);
-                                HTMLElement table = document.createElement("table");
-                                $(table).css("border", "1px solid grey").css("text-align", "left")
-                                        .css("display", "block");
                                 HTMLElement tr = document.createElement("tr");
-                                HTMLElement th1 = document.createElement("th");
-                                HTMLElement div2 = document.createElement("div");
-                                $(div2).css("width", "300px").css("height", "300px")
+                                HTMLElement th_img = document.createElement("th");
+                                HTMLElement th_text = document.createElement("th");
+                                $(th_text).css("border", "1px solid grey");
+
+                                HTMLElement div_img = document.createElement("div");
+                                $(div_img).css("width", "300px").css("height", "300px")
                                         .css("background-color", "black")
                                         .append(img);
                                 $(img).css("width", "100%").css("height", "100%")
                                         .css("object-fit", "contain").css("object-position", "50% 50%");
-                                HTMLElement th2 = document.createElement("th");
-                                $(th1).append(div2);
-                                $(th2).append(div);
-                                $(tr).append(th1).append(th2);
+                                HTMLElement div_text = document.createElement("div");
+                                $(div_text).text(r.content);
+                                $(th_img).append(div_img);
+                                $(th_text).append(div_text);
+                                $(tr).append(th_img).append(th_text);
                                 $(table).append(tr);
-                                $("#content").append(table);
                                 return null;
                             };
                         });
+                        $("#content").append(table);
                         $("#submit").removeAttr("disable");
                     });
                     return null;

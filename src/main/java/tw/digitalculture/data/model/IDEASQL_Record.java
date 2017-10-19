@@ -15,25 +15,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package tw.digitalculture.data.bin;
+package tw.digitalculture.data.model;
 
-import def.dom.XMLHttpRequest;
-import java.util.function.Consumer;
+import def.js.JSON;
+import tw.digitalculture.data.interfaces.Record;
 
 /**
  *
  * @author Jonathan Chang, Chun-yien <ccy@musicapoetica.org>
  */
-public class TWDC_XML {
-    public static void fetch(String url, Consumer<String> callback) {
-        XMLHttpRequest xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.onload = (e) -> {
-            String data = xhr.response.toString();
-            callback.accept(data);
-            return null;
-        };
-        xhr.send();
+public class IDEASQL_Record extends Record {
+
+    public JSON detail_infos;
+    public boolean img_link_valid = false;
+
+    public IDEASQL_Record(JSON rec) {
+        super(rec.$get("id").toString(),
+                "Foobar",
+                rec.$get("content").toString(),
+                rec.$get("img_link").toString());
+//        ((JSON) rec.$get("detail_infos")).$get("title").toString()
+        this.detail_infos = rec.$get("detail_infos");
+        System.out.println("title = " + this.detail_infos.$get("title"));
+
+        this.title = this.title.replaceAll("\\n", " ");
+        this.description = this.description.replaceAll("\\n", " ");
     }
 
 }

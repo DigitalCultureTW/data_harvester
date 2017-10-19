@@ -35,9 +35,10 @@ public class DataCenter {
 
     TWDC twdc;
     IdeaSQL ideasql;
-    List<Query<Record_Query>> queries = new ArrayList<>();
+    List<Query<Record_Query>> queries;
 
     public DataCenter(int limit, Consumer<Boolean> callback) {
+        this.queries = new ArrayList<>();
         this.twdc = new TWDC(limit, (t) -> {
             callback.accept(t);
             this.ideasql = new IdeaSQL();
@@ -53,9 +54,10 @@ public class DataCenter {
             source.query(result.query_str, (List<Record_Query> t) -> {
                 t.forEach((Record_Query rq) -> {
                     result.record_set.add(rq);
+                    System.out.println(source.id + ", rq=" + rq.content);
                 });
             });
-            callback.accept(result);
         });
+        callback.accept(result);
     }
 }

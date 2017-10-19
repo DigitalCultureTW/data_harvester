@@ -29,16 +29,14 @@ import java.util.function.Consumer;
 import tw.digitalculture.data.interfaces.Query;
 import tw.digitalculture.data.Config.DATA;
 import tw.digitalculture.data.bin.IDEASQL_JSON;
-import tw.digitalculture.data.bin.IDEASQL_JSON.Record;
+import tw.digitalculture.data.model.IDEASQL_Record;
 import tw.digitalculture.data.model.Record_Query;
 
 /**
  *
  * @author Jonathan
  */
-public class IdeaSQL implements Query<Record_Query> {
-
-    static IDEASQL_JSON ideasql = IDEASQL_JSON.getInstance();
+public class IdeaSQL extends Query<Record_Query> {
 
     public String get_url(String query_text, int limit) {
         String api = (query_text.split(" ").length > 1)
@@ -55,18 +53,14 @@ public class IdeaSQL implements Query<Record_Query> {
 
     @Override
     public void query(String query_text, Consumer<List<Record_Query>> callback) {
-        ideasql.fetch(get_url(query_text, DATA.LIMIT), (Array<JSON> fetch_result) -> {
+        IDEASQL_JSON.fetch(get_url(query_text, DATA.LIMIT), (Array<JSON> fetch_result) -> {
             fetch_result.forEach((JSON rec) -> {
-                Record record = ideasql.createRecord(
-                        rec.$get("id").toString(), 
-                        rec.$get("content").toString(),
-                        rec.$get("img_link").toString(), 
-                        rec.$get("detail_infos"));
-                IsValidImageUrl(record.img_link, (isValid) -> {
+                IDEASQL_Record record = new IDEASQL_Record(rec);
+                IsValidImageUrl(record.uri, (Boolean isValid) -> {
                     record.img_link_valid = isValid;
                     String text = record.title.contains(query_text)
-                            ? record.title : record.content;
-                    result.add(new Record_Query(record.img_link, text));
+                            ? record.title : record.description;
+                    result.add(new Record_Query(record.uri, text));
                 });
             });
             callback.accept(result);
@@ -85,7 +79,6 @@ public class IdeaSQL implements Query<Record_Query> {
             return null;
         };
     }
-
 }
 /*
 (function () {
@@ -114,7 +107,7 @@ public class IdeaSQL implements Query<Record_Query> {
                 if (data.length === 0)
                     next(0);
                 data.forEach((rec) => {
-                    var record = new json.Record(rec.id, rec.content,
+                    var record = new json.IDEASQL_Record(rec.id, rec.description,
                             rec.img_link, JSON.parse(rec.detail_infos));
                     records.push(record);
                     methods.IsValidImageUrl(rec.img_link, (isValid) => {
@@ -129,10 +122,10 @@ public class IdeaSQL implements Query<Record_Query> {
                         records.forEach((record) => {
                             if (record.img_link_valid) {
                                 var text = record.title.includes(query_text) ?
-                                        record.title : record.content;
+                                        record.title : record.description;
                                 result.push({
                                     img_url: record.img_link,
-                                    content: text
+                                    description: text
                                 });
                             }
                         });
@@ -148,13 +141,13 @@ public class IdeaSQL implements Query<Record_Query> {
             });
         };
 
-        methods.getWordbreak = function (content, callback) {
-            var text = content;
+        methods.getWordbreak = function (description, callback) {
+            var text = description;
 
             var url = cf.IDEASQL.WB_URL + encodeURIComponent(text);
 //    console.log(decodeURIComponent(url));
-            (url, function (content) {
-                callback(content);
+            (url, function (description) {
+                callback(description);
             });
         };
 

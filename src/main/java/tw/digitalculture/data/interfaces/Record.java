@@ -17,24 +17,33 @@
  */
 package tw.digitalculture.data.interfaces;
 
-import java.util.List;
-import java.util.function.Consumer;
-
 /**
  *
  * @author Jonathan
- * @param <R>
  */
-public abstract class Query<R> {
+public abstract class Record {
 
-    public String id = this.getClass().getName();
+    public String id;
+    public String title;
+    public String description;
+    public String uri;
+    public String filename;
+    public String filetype;
 
-    /**
-     *
-     * @param text
-     * @param callback
-     */
-//    public <R> void query(String text, Consumer<List<R>> callback);
-    public abstract void query(String text, Consumer<List<R>> callback);
+    public Record(String id, String title, String description, String uri) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.uri = uri;
+        setFilename();
+        setFiletype();
+    }
 
+    public void setFilename() {
+        this.filename = this.uri.split("/")[this.uri.split("/").length - 1];
+    }
+
+    public void setFiletype() {
+        this.filetype = this.uri.split(".")[this.uri.split(".").length - 1];
+    }
 }

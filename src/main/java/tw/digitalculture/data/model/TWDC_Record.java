@@ -22,35 +22,23 @@ import static def.jquery.Globals.$;
 import static def.js.Globals.decodeURIComponent;
 import java.util.ArrayList;
 import java.util.List;
+import tw.digitalculture.data.interfaces.Record;
 
 /**
  *
  * @author Jonathan Chang, Chun-yien <ccy@musicapoetica.org>
  */
-public class Record {
+public class TWDC_Record extends Record {
 
-    public String identifier;
-    public String title;
     public List<String> subjects = new ArrayList<>();
-    public String description;
-    public String link;
-    public String filename;
-    public String filetype;
 
-    public Record(JQuery header, JQuery metadata) {
-        this.identifier = $(header).find("identifier").text();
-        this.title = $(metadata).find("dc\\:title").text();
-        $(metadata).find("dc\\:subject").each((i, s) -> {
-            return subjects.add($(s).text());
-        });
-        this.description = $(metadata).find("dc\\:description").filter((t, u) -> {
-            return (!$(u).text().startsWith("http://"));
-        }).text();//.replaceAll("\n", "\n\n");
-        this.link = decodeURIComponent($(metadata).find("dc\\:description").filter((t, u) -> {
-            return ($(u).text().startsWith("http://"));
-        }).text());
-        this.filename = this.link.split("/")[this.link.split("/").length - 1];
-        this.filetype = this.link.split(".")[this.link.split(".").length - 1];
+    public TWDC_Record(JQuery header, JQuery metadata) {
+        super($(header).find("identifier").text(),
+                $(metadata).find("dc\\:title").text(),
+                $(metadata).find("dc\\:description").filter((t, u)
+                        -> (!$(u).text().startsWith("http://"))).text(),
+                decodeURIComponent($(metadata).find("dc\\:description").filter((t, u)
+                        -> ($(u).text().startsWith("http://"))).text()));
     }
 
     public String contains(String keyword) {
@@ -73,4 +61,5 @@ public class Record {
         }
         return result;
     }
+
 }

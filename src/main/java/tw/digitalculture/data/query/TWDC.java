@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 import tw.digitalculture.data.Config.DATA;
 import static tw.digitalculture.data.Config.DATA.FILETYPES;
 import tw.digitalculture.data.bin.TWDC_XML;
-import tw.digitalculture.data.model.Record;
+import tw.digitalculture.data.model.TWDC_Record;
 import static tw.digitalculture.data.Config.DATA.TWDC.URL;
 import tw.digitalculture.data.interfaces.Query;
 import tw.digitalculture.data.model.Record_Query;
@@ -34,10 +34,10 @@ import tw.digitalculture.data.model.Record_Query;
  *
  * @author Jonathan Chang, Chun-yien <ccy@musicapoetica.org>
  */
-public class TWDC implements Query<Record_Query> {
+public class TWDC extends Query<Record_Query> {
 
     public int limit;
-    private static List<Record> dataset;
+    private static List<TWDC_Record> dataset;
 
     public TWDC(int limit, Consumer<Boolean> callback) {
         this.limit = limit;
@@ -51,10 +51,10 @@ public class TWDC implements Query<Record_Query> {
             JQuery xml_records = $(data).find("record");
             System.out.println("processing " + xml_records.length + " records...");
             xml_records.each((t, u) -> {
-                Record record = new Record(
+                TWDC_Record record = new TWDC_Record(
                         $(u).find("header"),
                         $(u).find("metadata"));
-                if (!record.link.isEmpty() && FILETYPES.contains(record.filetype)) {
+                if (!record.uri.isEmpty() && FILETYPES.contains(record.filetype)) {
                     dataset.add(record);
                     System.out.println(dataset.size() + ". " + record.title);
                 }
@@ -75,11 +75,11 @@ public class TWDC implements Query<Record_Query> {
     public void query(String text, Consumer<List<Record_Query>> callback) {
         List<Record_Query> records = new ArrayList();
         int n = this.limit;
-        for (Record data : dataset) {
+        for (TWDC_Record data : dataset) {
             String result = data.contains(text);
             if (!result.isEmpty()) {
                 n--;
-                records.add(new Record_Query(data.link, result));
+                records.add(new Record_Query(data.uri, result));
             }
             if (n == 0) {
                 break;
@@ -94,7 +94,7 @@ public class TWDC implements Query<Record_Query> {
                 var xml_records = $(data).find("record");
                 console.log("processing " + xml_records.length + " records...");
                 xml_records.each(function () {
-                    var record = new Record(
+                    var record = new TWDC_Record(
                             $(this).find("header"),
                             $(this).find("metadata"));
                     if (record.link && cf.FILETYPES.indexOf(record.filetype) > -1) {
