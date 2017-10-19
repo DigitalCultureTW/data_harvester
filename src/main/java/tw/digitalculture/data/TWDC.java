@@ -26,13 +26,14 @@ import static tw.digitalculture.data.Config.DATA.FILETYPES;
 import tw.digitalculture.data.bin.XML;
 import tw.digitalculture.data.model.Record;
 import static tw.digitalculture.data.Config.DATA.TWDC.URL;
+import tw.digitalculture.data.interfaces.Query;
 import tw.digitalculture.data.model.Record_Query;
 
 /**
  *
  * @author Jonathan Chang, Chun-yien <ccy@musicapoetica.org>
  */
-public class TWDC {
+public class TWDC implements Query<Record_Query> {
 
     public int limit;
     private static List<Record> dataset;
@@ -47,7 +48,7 @@ public class TWDC {
 
         XML.fetch(URL, (String data) -> {
             JQuery xml_records = $(data).find("record");
-
+            System.out.println("Total records = " + xml_records.length);
             xml_records.each((t, u) -> {
                 Record record = new Record(
                         $(u).find("header"),
@@ -63,7 +64,8 @@ public class TWDC {
         });
     }
 
-    public void query(String text, Consumer<List<Record_Query>> callback) {
+    @Override
+    public void query(String text, Consumer callback) {
         List<Record_Query> records = new ArrayList();
         int n = this.limit;
         for (Record data : dataset) {
