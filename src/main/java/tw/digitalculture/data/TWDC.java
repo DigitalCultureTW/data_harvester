@@ -22,6 +22,7 @@ import def.jquery.JQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import tw.digitalculture.data.Config.DATA;
 import static tw.digitalculture.data.Config.DATA.FILETYPES;
 import tw.digitalculture.data.bin.XML;
 import tw.digitalculture.data.model.Record;
@@ -41,31 +42,37 @@ public class TWDC implements Query<Record_Query> {
     public TWDC(int limit, Consumer<Boolean> callback) {
         this.limit = limit;
         TWDC.dataset = new ArrayList<>();
-        refresh(callback);
+        refresh(URL, callback);
     }
 
-    public static void refresh(Consumer<Boolean> callback) {
+    public static void refresh(String url, Consumer<Boolean> callback) {
 
-        XML.fetch(URL, (String data) -> {
+        XML.fetch(url, (String data) -> {
             JQuery xml_records = $(data).find("record");
-            System.out.println("Total records = " + xml_records.length);
+            System.out.println("processing " + xml_records.length + " records...");
             xml_records.each((t, u) -> {
                 Record record = new Record(
                         $(u).find("header"),
                         $(u).find("metadata"));
                 if (!record.link.isEmpty() && FILETYPES.contains(record.filetype)) {
                     dataset.add(record);
+                    System.out.println(dataset.size() + ". " + record.title);
                 }
                 return null;
             });
-            System.out.println(
-                    "Initializing twdc dataset completed. Total record fetched = " + dataset.size());
-            callback.accept(Boolean.TRUE);
+            String resumptionToken = $(data).find("resumptionToken").text();
+            if (resumptionToken.isEmpty()) {
+                System.out.println(
+                        "Initializing twdc dataset completed. Total record fetched = " + dataset.size());
+                callback.accept(Boolean.TRUE);
+            } else {
+                refresh(DATA.TWDC.URL_TOKEN + resumptionToken, callback);
+            }
         });
     }
 
     @Override
-    public void query(String text, Consumer callback) {
+    public void query(String text, Consumer<List<Record_Query>> callback) {
         List<Record_Query> records = new ArrayList();
         int n = this.limit;
         for (Record data : dataset) {
@@ -81,4 +88,29 @@ public class TWDC implements Query<Record_Query> {
         callback.accept(records);
     }
 
+    /*
+    methods.refresh = function (url, callback) {
+            xml.fetch(url, (data) => {
+                var xml_records = $(data).find("record");
+                console.log("processing " + xml_records.length + " records...");
+                xml_records.each(function () {
+                    var record = new Record(
+                            $(this).find("header"),
+                            $(this).find("metadata"));
+                    if (record.link && cf.FILETYPES.indexOf(record.filetype) > -1) {
+                        dataset.push(record);
+                        console.log(dataset.length + ". " + record.title);
+                    }
+                });
+                var resumptionToken = $(data).find('resumptionToken').text();
+                if (resumptionToken)
+                    methods.refresh(cf.TWDC.URL_TOKEN + resumptionToken, callback);
+                else {
+                    console.log("TWDC dataset initialization completed. Total records fetched: "
+                            + dataset.length);
+                    callback();
+                }
+            });
+        };
+     */
 }

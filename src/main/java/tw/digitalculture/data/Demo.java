@@ -55,25 +55,27 @@ public class Demo {
                             HTMLElement div = Globals.document.createElement("div");
                             HTMLImageElement img = (HTMLImageElement) document.createElement("img");
                             img.src = r.img_url;
-                            $(div).text(r.content);
-                            HTMLElement table = document.createElement("table");
-                            $(table).css("border", "1px solid grey").css("text-align", "left")
-                                    .css("display", "block");
-                            HTMLElement tr = document.createElement("tr");
-                            HTMLElement th1 = document.createElement("th");
-                            HTMLElement div2 = document.createElement("div");
-                            $(div2).css("width", "300px")
-                                    .css("height", (img.height > img.width) ? "300px" : "auto")
-                                    .css("background-color", "black")
-                                    .append(img);
-                            $(img).css("width", "100%").css("height", "100%")
-                                    .css("object-fit", "contain").css("object-position", "50% 50%");
-                            HTMLElement th2 = document.createElement("th");
-                            $(th1).append(div2);
-                            $(th2).append(div);
-                            $(tr).append(th1).append(th2);
-                            $(table).append(tr);
-                            $("#content").append(table);
+                            img.onload = (evt) -> {
+                                $(div).text(r.content);
+                                HTMLElement table = document.createElement("table");
+                                $(table).css("border", "1px solid grey").css("text-align", "left")
+                                        .css("display", "block");
+                                HTMLElement tr = document.createElement("tr");
+                                HTMLElement th1 = document.createElement("th");
+                                HTMLElement div2 = document.createElement("div");
+                                $(div2).css("width", "300px").css("height", "300px")
+                                        .css("background-color", "black")
+                                        .append(img);
+                                $(img).css("width", "100%").css("height", "100%")
+                                        .css("object-fit", "contain").css("object-position", "50% 50%");
+                                HTMLElement th2 = document.createElement("th");
+                                $(th1).append(div2);
+                                $(th2).append(div);
+                                $(tr).append(th1).append(th2);
+                                $(table).append(tr);
+                                $("#content").append(table);
+                                return null;
+                            };
                         });
                         $("#submit").removeAttr("disable");
                     });

@@ -27,6 +27,12 @@ import java.util.function.Consumer;
  */
 public interface Query<R> {
 
-    public <R> void query(String text, Consumer<List<R>> callback);
+    /**
+     *
+     * @param text
+     * @param callback
+     */
+//    public <R> void query(String text, Consumer<List<R>> callback);
+    public void query(String text, Consumer<List<R>> callback);
 
 }

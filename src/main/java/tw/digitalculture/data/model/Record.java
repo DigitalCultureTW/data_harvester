@@ -45,7 +45,7 @@ public class Record {
         });
         this.description = $(metadata).find("dc\\:description").filter((t, u) -> {
             return (!$(u).text().startsWith("http://"));
-        }).text();
+        }).text();//.replaceAll("\n", "\n\n");
         this.link = decodeURIComponent($(metadata).find("dc\\:description").filter((t, u) -> {
             return ($(u).text().startsWith("http://"));
         }).text());
