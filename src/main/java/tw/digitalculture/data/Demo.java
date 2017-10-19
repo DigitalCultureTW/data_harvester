@@ -17,6 +17,7 @@
  */
 package tw.digitalculture.data;
 
+import def.dom.Event;
 import def.dom.Globals;
 import static def.dom.Globals.document;
 import def.dom.HTMLElement;
@@ -38,7 +39,7 @@ public class Demo {
 
     public static void main(String[] args) {
 
-        new Demo(100, (Boolean t) -> {
+        Demo demo = new Demo(100, (Boolean t) -> {
             if (t) {
                 $("#submit").attr("disable", "disable");
                 $("#submit").on("click", (e, o) -> {
@@ -50,27 +51,31 @@ public class Demo {
 
                     dc.getResult(data, (Result result) -> {
                         List<Record_Query> rs = result.record_set;
+                        HTMLElement table = document.createElement("table");
                         rs.forEach((Record_Query r) -> {
-                            HTMLElement div = Globals.document.createElement("div");
                             HTMLImageElement img = (HTMLImageElement) document.createElement("img");
                             $(img).css("width", "100%").css("height", "100%")
                                     .css("object-fit", "contain");
                             img.src = r.img_url;
-                            $(div).text(r.content);
-                            HTMLElement table = document.createElement("table");
-                            $(table).css("border", "1px solid grey").css("text-align", "left");
+                            img.onload = (Event evt) -> {
+                                HTMLElement div_text = Globals.document.createElement("div");
+                                $(div_text).text(r.content);
+                                $(table).css("border", "1px solid grey").css("text-align", "left");
 //                                    .css("display", "block");
-                            HTMLElement tr = document.createElement("tr");
-                            HTMLElement th1 = document.createElement("th");
-                            HTMLElement div2 = document.createElement("div");
-                            $(div2).css("height", (img.height > 300) ? "300px" : "auto")
-                                    .css("width", "300px").css("background-color","black")
-                                    .append(img);
-                            HTMLElement th2 = document.createElement("th");
-                            $(th1).append(div2);
-                            $(th2).append(div);
-                            $(tr).append(th1).append(th2);
-                            $(table).append(tr);
+                                HTMLElement tr = document.createElement("tr");
+                                HTMLElement div_img = document.createElement("div");
+                                $(div_img).css("height", (img.height > 300) ? "300px" : "auto")
+                                        .css("width", "300px").css("background-color", "black")
+                                        .append(img);
+                                HTMLElement th1 = document.createElement("th");
+                                HTMLElement th2 = document.createElement("th");
+                                $(th2).css("width", "auto").css("border", "1px solid grey");
+                                $(th1).append(div_img);
+                                $(th2).append(div_text);
+                                $(tr).append(th1).append(th2);
+                                $(table).append(tr);
+                                return null;
+                            };
                             $("#content").append(table);
                         });
                         $("#submit").removeAttr("disable");
