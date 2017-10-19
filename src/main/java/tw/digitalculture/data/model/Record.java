@@ -17,8 +17,8 @@
  */
 package tw.digitalculture.data.model;
 
-import static def.jquery.Globals.$;
 import def.jquery.JQuery;
+import static def.jquery.Globals.$;
 import static def.js.Globals.decodeURIComponent;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,7 @@ public class Record {
     public List<String> subjects = new ArrayList<>();
     public String description;
     public String link;
+    public String filename;
     public String filetype;
 
     public Record(JQuery header, JQuery metadata) {
@@ -44,11 +45,14 @@ public class Record {
         });
         this.description = $(metadata).find("dc\\:description").filter((t, u) -> {
             return (!$(u).text().startsWith("http://"));
-        }).text().replaceAll("\n", "\n\n");
+        }).text();
         this.link = decodeURIComponent($(metadata).find("dc\\:description").filter((t, u) -> {
             return ($(u).text().startsWith("http://"));
         }).text());
+        this.filename = this.link.split("/")[this.link.split("/").length - 1];
         this.filetype = this.link.split(".")[this.link.split(".").length - 1];
+        System.out.println("filename = " + filename);
+        System.out.println("filetype = " + filetype);
     }
 
     public String contains(String keyword) {
