@@ -79,7 +79,6 @@ public class Demo {
                         });
                         $("#submit").removeAttr("disable");
                     });
-
                     return null;
                 });
 

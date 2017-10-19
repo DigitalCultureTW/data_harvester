@@ -19,6 +19,7 @@ package tw.digitalculture.data;
 
 import tw.digitalculture.data.query.TWDC;
 import def.js.JSON;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import tw.digitalculture.data.interfaces.Query;
@@ -34,22 +35,27 @@ public class DataCenter {
 
     TWDC twdc;
     IdeaSQL ideasql;
-    List<Query> queries;
+    List<Query<Record_Query>> queries = new ArrayList<>();
 
     public DataCenter(int limit, Consumer<Boolean> callback) {
-        this.twdc = new TWDC(limit, callback);
-        this.ideasql = new IdeaSQL();
-        this.queries.add(twdc);
+        this.twdc = new TWDC(limit, (t) -> {
+            callback.accept(t);
+            this.ideasql = new IdeaSQL();
+            this.queries.add(twdc);
+            this.queries.add(ideasql);
+        });
     }
 
     public void getResult(JSON data, Consumer<Result> callback) {
         Result result = new Result(data.$get("client"), data.$get("text"));
         System.out.println(result.query_str);
-        twdc.query(result.query_str, (twdc_result) -> {
-            ((List<Record_Query>) twdc_result).forEach((e) -> result.record_set.add(e));
+        queries.forEach((Query<Record_Query> source) -> {
+            source.query(result.query_str, (List<Record_Query> t) -> {
+                t.forEach((Record_Query rq) -> {
+                    result.record_set.add(rq);
+                });
+            });
             callback.accept(result);
         });
-
     }
-
 }

@@ -51,8 +51,6 @@ public class Record {
         }).text());
         this.filename = this.link.split("/")[this.link.split("/").length - 1];
         this.filetype = this.link.split(".")[this.link.split(".").length - 1];
-        System.out.println("filename = " + filename);
-        System.out.println("filetype = " + filetype);
     }
 
     public String contains(String keyword) {

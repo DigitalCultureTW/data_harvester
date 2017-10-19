@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import tw.digitalculture.data.Config.DATA;
 import static tw.digitalculture.data.Config.DATA.FILETYPES;
-import tw.digitalculture.data.bin.XML;
+import tw.digitalculture.data.bin.TWDC_XML;
 import tw.digitalculture.data.model.Record;
 import static tw.digitalculture.data.Config.DATA.TWDC.URL;
 import tw.digitalculture.data.interfaces.Query;
@@ -47,7 +47,7 @@ public class TWDC implements Query<Record_Query> {
 
     public static void refresh(String url, Consumer<Boolean> callback) {
 
-        XML.fetch(url, (String data) -> {
+        TWDC_XML.fetch(url, (String data) -> {
             JQuery xml_records = $(data).find("record");
             System.out.println("processing " + xml_records.length + " records...");
             xml_records.each((t, u) -> {

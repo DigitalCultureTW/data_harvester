@@ -25,10 +25,10 @@ import static tw.digitalculture.data.Config.DATA.TWDC.URL;
  *
  * @author Jonathan Chang, Chun-yien <ccy@musicapoetica.org>
  */
-public class XML {
+public class TWDC_XML {
 
     public static void main(String[] args) {
-        XML.fetch(URL, (t) -> {
+        TWDC_XML.fetch(URL, (t) -> {
         });
     }
 

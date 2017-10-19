@@ -17,18 +17,150 @@
  */
 package tw.digitalculture.data.query;
 
+import def.dom.XMLHttpRequest;
+import def.js.Array;
+import def.js.JSON;
+import static def.js.Globals.decodeURIComponent;
+import static def.js.Globals.encodeURIComponent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
+
 import tw.digitalculture.data.interfaces.Query;
+import tw.digitalculture.data.Config.DATA;
+import tw.digitalculture.data.bin.IDEASQL_JSON;
+import tw.digitalculture.data.bin.IDEASQL_JSON.Record;
+import tw.digitalculture.data.model.Record_Query;
 
 /**
  *
  * @author Jonathan
  */
-public class IdeaSQL implements Query{
+public class IdeaSQL implements Query<Record_Query> {
+
+    static IDEASQL_JSON ideasql = IDEASQL_JSON.getInstance();
+
+    public String get_url(String query_text, int limit) {
+        String api = (query_text.split(" ").length > 1)
+                ? DATA.IDEASQL.MULTI_URL : DATA.IDEASQL.URL;
+        String url = api + encodeURIComponent(query_text)
+                + ((limit > 0) ? "?limit=" + limit : "");
+        System.out.println(decodeURIComponent(url));
+        return url;
+    }
+
+    List<Record_Query> result = new ArrayList<>();
+    Array<JSON> data;
+    int count;
 
     @Override
-    public void query(String text, Consumer callback) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void query(String query_text, Consumer<List<Record_Query>> callback) {
+        ideasql.fetch(get_url(query_text, DATA.LIMIT), (Array<JSON> fetch_result) -> {
+            fetch_result.forEach((JSON rec) -> {
+                Record record = ideasql.createRecord(
+                        rec.$get("id").toString(), 
+                        rec.$get("content").toString(),
+                        rec.$get("img_link").toString(), 
+                        rec.$get("detail_infos"));
+                IsValidImageUrl(record.img_link, (isValid) -> {
+                    record.img_link_valid = isValid;
+                    String text = record.title.contains(query_text)
+                            ? record.title : record.content;
+                    result.add(new Record_Query(record.img_link, text));
+                });
+            });
+            callback.accept(result);
+        });
     }
-    
+
+    public void IsValidImageUrl(String url, Consumer<Boolean> callback) {
+        XMLHttpRequest xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onerror = (t) -> {
+            callback.accept(false);
+            return null; //To change body of generated lambdas, choose Tools | Templates.
+        };
+        xhr.onload = (t) -> {
+            callback.accept(true);
+            return null;
+        };
+    }
+
 }
+/*
+(function () {
+    'use strict';
+    var cf = require('../config.js').DATA;
+    var json = require('./json.js')();
+    var request = require('request');
+
+    module.exports = function () {
+        var methods = {};
+
+        methods.get_url = function (query_text, limit) {
+            var api = (query_text.split(" ").length > 1) ?
+                    cf.IDEASQL.MULTI_URL : cf.IDEASQL.URL;
+            var url = api + encodeURIComponent(query_text) +
+                    ((limit > 0) ? "?limit=" + limit : "");
+            console.log(decodeURIComponent(url));
+            return url;
+        };
+
+        methods.query = function (query_text, limit, callback) {
+            var records = [];
+            var count = 0;
+            json.fetch(methods.get_url(query_text, limit), (data) => {
+//        console.log("Total records: " + data.length);
+                if (data.length === 0)
+                    next(0);
+                data.forEach((rec) => {
+                    var record = new json.Record(rec.id, rec.content,
+                            rec.img_link, JSON.parse(rec.detail_infos));
+                    records.push(record);
+                    methods.IsValidImageUrl(rec.img_link, (isValid) => {
+                        record.img_link_valid = isValid;
+                        next(1);
+                    });
+                });
+                function next(n) {
+                    count += n;
+                    if (count === data.length) {
+                        var result = [];
+                        records.forEach((record) => {
+                            if (record.img_link_valid) {
+                                var text = record.title.includes(query_text) ?
+                                        record.title : record.content;
+                                result.push({
+                                    img_url: record.img_link,
+                                    content: text
+                                });
+                            }
+                        });
+                        callback(result);
+                    }
+                }
+            });
+        };
+
+        methods.IsValidImageUrl = function (url, callback) {
+            request.get(url, (error, response, body) => {
+                callback(!error && response.statusCode === 200);
+            });
+        };
+
+        methods.getWordbreak = function (content, callback) {
+            var text = content;
+
+            var url = cf.IDEASQL.WB_URL + encodeURIComponent(text);
+//    console.log(decodeURIComponent(url));
+            (url, function (content) {
+                callback(content);
+            });
+        };
+
+        return methods;
+    };
+}());
+
+
+ */
