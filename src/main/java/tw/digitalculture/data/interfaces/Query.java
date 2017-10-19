@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Jonathan Chang, Chun-yien <ccy@musicapoetica.org>
+ * Copyright (C) 2017 Jonathan
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,32 +15,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package tw.digitalculture.data.bin;
+package tw.digitalculture.data.interfaces;
 
-import def.dom.XMLHttpRequest;
+import java.util.List;
 import java.util.function.Consumer;
-import static tw.digitalculture.data.Config.DATA.TWDC.URL;
 
 /**
  *
- * @author Jonathan Chang, Chun-yien <ccy@musicapoetica.org>
+ * @author Jonathan
+ * @param <R>
  */
-public class XML {
+public interface Query<R> {
 
-    public static void main(String[] args) {
-        XML.fetch(URL, (t) -> {
-        });
-    }
-
-    public static void fetch(String url, Consumer<String> callback) {
-        XMLHttpRequest xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.onload = (e) -> {
-            String data = xhr.response.toString();
-            callback.accept(data);
-            return null;
-        };
-        xhr.send();
-    }
+    public <R> void query(String text, Consumer<List<R>> callback);
 
 }

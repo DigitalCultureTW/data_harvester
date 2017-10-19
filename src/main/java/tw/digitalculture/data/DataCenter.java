@@ -38,13 +38,10 @@ public class DataCenter {
     public void getResult(JSON data, Consumer<Result> callback) {
         Result result = new Result(data.$get("client"), data.$get("text"));
         System.out.println(result.query_str);
-        twdc.query(result.query_str, ((List<Record_Query> twdc_result) -> {
-            System.out.println("twdc_result = " + twdc_result.size());
-            twdc_result.forEach((r) -> {
-                result.record_set.add(r);
-            });
+        twdc.query(result.query_str, (twdc_result) -> {
+            ((List<Record_Query>) twdc_result).forEach((e) -> result.record_set.add(e));
             callback.accept(result);
-        }));
+        });
 
     }
 

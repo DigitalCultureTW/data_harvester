@@ -6,7 +6,7 @@
       "lastUpdateTimestamp": 1501669704000,
       "modelVersion": "unknown",
       "transpilerVersion": "2.0.0",
-      "jsOutputDirPath": "C:\\Users\\Jonathan Chang\\Documents\\NetBeansProjects\\Group-TWDC\\TWDC Data Harvester\\webapp",
+      "jsOutputDirPath": "C:\\Users\\Jonathan Chang\\Documents\\NetBeansProjects\\data_harvester\\webapp",
       "jsDirPath": "META-INF/resources/webjars/jquery/1.10.0-20170726",
       "jsFilesPaths": []
     },
@@ -16,7 +16,7 @@
       "lastUpdateTimestamp": 1496040138000,
       "modelVersion": "unknown",
       "transpilerVersion": "2.0.0",
-      "jsOutputDirPath": "C:\\Users\\Jonathan Chang\\Documents\\NetBeansProjects\\Group-TWDC\\TWDC Data Harvester\\webapp",
+      "jsOutputDirPath": "C:\\Users\\Jonathan Chang\\Documents\\NetBeansProjects\\data_harvester\\webapp",
       "jsDirPath": "META-INF/resources/webjars/jsweet-core/6-SNAPSHOT",
       "jsFilesPaths": []
     }

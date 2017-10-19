@@ -18,13 +18,14 @@
 package tw.digitalculture.data;
 
 import def.dom.Globals;
-import static def.dom.Globals.document;
 import def.dom.HTMLElement;
 import def.dom.HTMLImageElement;
-import static def.jquery.Globals.$;
 import def.js.JSON;
+import static def.dom.Globals.document;
+import static def.jquery.Globals.$;
 import java.util.List;
 import java.util.function.Consumer;
+
 import tw.digitalculture.data.model.Record_Query;
 import tw.digitalculture.data.model.Result;
 
@@ -53,19 +54,20 @@ public class Demo {
                         rs.forEach((Record_Query r) -> {
                             HTMLElement div = Globals.document.createElement("div");
                             HTMLImageElement img = (HTMLImageElement) document.createElement("img");
-                            $(img).css("width", "100%").css("height", "100%")
-                                    .css("object-fit", "contain");
                             img.src = r.img_url;
                             $(div).text(r.content);
                             HTMLElement table = document.createElement("table");
-                            $(table).css("border", "1px solid grey").css("text-align", "left");
-//                                    .css("display", "block");
+                            $(table).css("border", "1px solid grey").css("text-align", "left")
+                                    .css("display", "block");
                             HTMLElement tr = document.createElement("tr");
                             HTMLElement th1 = document.createElement("th");
                             HTMLElement div2 = document.createElement("div");
-                            $(div2).css("height", (img.height > 300) ? "300px" : "auto")
-                                    .css("width", "300px").css("background-color","black")
+                            $(div2).css("width", "300px")
+                                    .css("height", (img.height > img.width) ? "300px" : "auto")
+                                    .css("background-color", "black")
                                     .append(img);
+                            $(img).css("width", "100%").css("height", "100%")
+                                    .css("object-fit", "contain").css("object-position", "50% 50%");
                             HTMLElement th2 = document.createElement("th");
                             $(th1).append(div2);
                             $(th2).append(div);
