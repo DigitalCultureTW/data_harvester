@@ -27,14 +27,15 @@ import java.util.function.Consumer;
  */
 public abstract class Query<R> {
 
-    public String id = this.getClass().getName();
+    public String id = this.getClass().getSimpleName();
 
     /**
      *
      * @param text
+     * @param limit
      * @param callback
      */
 //    public <R> void query(String text, Consumer<List<R>> callback);
-    public abstract void query(String text, Consumer<List<R>> callback);
+    public abstract void query(String text, int limit, Consumer<List<R>> callback);
 
 }

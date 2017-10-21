@@ -36,11 +36,9 @@ import tw.digitalculture.data.model.Record_Query;
  */
 public class TWDC extends Query<Record_Query> {
 
-    public int limit;
     private static List<TWDC_Record> dataset;
 
-    public TWDC(int limit, Consumer<Boolean> callback) {
-        this.limit = limit;
+    public TWDC(Consumer<Boolean> callback) {
         TWDC.dataset = new ArrayList<>();
         refresh(URL, callback);
     }
@@ -72,9 +70,9 @@ public class TWDC extends Query<Record_Query> {
     }
 
     @Override
-    public void query(String text, Consumer<List<Record_Query>> callback) {
+    public void query(String text, int limit, Consumer<List<Record_Query>> callback) {
         List<Record_Query> records = new ArrayList();
-        int n = this.limit;
+        int n = limit;
         for (TWDC_Record data : dataset) {
             String result = data.contains(text);
             if (!result.isEmpty()) {

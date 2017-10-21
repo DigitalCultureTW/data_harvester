@@ -22,7 +22,6 @@ import def.dom.XMLHttpRequest;
 import def.js.Array;
 import def.js.JSON;
 import java.util.function.Consumer;
-import tw.digitalculture.data.interfaces.Record;
 
 /**
  *
@@ -38,7 +37,7 @@ public class IDEASQL_JSON {
 //            String body="";
             String data = xhr.response.toString();
             Array<JSON> result = (Array<JSON>) JSON.parse(data);
-            System.out.println("result=" + result.length);
+//            System.out.println("result=" + result.length);
             callback.accept(result);
             return null;
         };

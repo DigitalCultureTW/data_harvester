@@ -47,13 +47,15 @@ public class IdeaSQL extends Query<Record_Query> {
         return url;
     }
 
-    List<Record_Query> result = new ArrayList<>();
-    Array<JSON> data;
+    List<Record_Query> result;
+
     int count;
 
     @Override
-    public void query(String query_text, Consumer<List<Record_Query>> callback) {
-        IDEASQL_JSON.fetch(get_url(query_text, DATA.LIMIT), (Array<JSON> fetch_result) -> {
+    public void query(String query_text, int limit, Consumer<List<Record_Query>> callback) {
+        count = 0;
+        result = new ArrayList<>();
+        IDEASQL_JSON.fetch(get_url(query_text, limit), (Array<JSON> fetch_result) -> {
             fetch_result.forEach((JSON rec) -> {
                 IDEASQL_Record record = new IDEASQL_Record(rec);
                 IsValidImageUrl(record.uri, (Boolean isValid) -> {
@@ -61,15 +63,18 @@ public class IdeaSQL extends Query<Record_Query> {
                     String text = record.title.contains(query_text)
                             ? record.title : record.description;
                     result.add(new Record_Query(record.uri, text));
+                    count++;
+                    if (count == fetch_result.length) {
+                        callback.accept(result);
+                    }
                 });
             });
-            callback.accept(result);
         });
     }
 
     public void IsValidImageUrl(String url, Consumer<Boolean> callback) {
         XMLHttpRequest xhr = new XMLHttpRequest();
-        xhr.open("GET", url);
+        xhr.open("GET", url, true);
         xhr.onerror = (t) -> {
             callback.accept(false);
             return null; //To change body of generated lambdas, choose Tools | Templates.
@@ -78,82 +83,6 @@ public class IdeaSQL extends Query<Record_Query> {
             callback.accept(true);
             return null;
         };
+        xhr.send();
     }
 }
-/*
-(function () {
-    'use strict';
-    var cf = require('../config.js').DATA;
-    var json = require('./json.js')();
-    var request = require('request');
-
-    module.exports = function () {
-        var methods = {};
-
-        methods.get_url = function (query_text, limit) {
-            var api = (query_text.split(" ").length > 1) ?
-                    cf.IDEASQL.MULTI_URL : cf.IDEASQL.URL;
-            var url = api + encodeURIComponent(query_text) +
-                    ((limit > 0) ? "?limit=" + limit : "");
-            console.log(decodeURIComponent(url));
-            return url;
-        };
-
-        methods.query = function (query_text, limit, callback) {
-            var records = [];
-            var count = 0;
-            json.fetch(methods.get_url(query_text, limit), (data) => {
-//        console.log("Total records: " + data.length);
-                if (data.length === 0)
-                    next(0);
-                data.forEach((rec) => {
-                    var record = new json.IDEASQL_Record(rec.id, rec.description,
-                            rec.img_link, JSON.parse(rec.detail_infos));
-                    records.push(record);
-                    methods.IsValidImageUrl(rec.img_link, (isValid) => {
-                        record.img_link_valid = isValid;
-                        next(1);
-                    });
-                });
-                function next(n) {
-                    count += n;
-                    if (count === data.length) {
-                        var result = [];
-                        records.forEach((record) => {
-                            if (record.img_link_valid) {
-                                var text = record.title.includes(query_text) ?
-                                        record.title : record.description;
-                                result.push({
-                                    img_url: record.img_link,
-                                    description: text
-                                });
-                            }
-                        });
-                        callback(result);
-                    }
-                }
-            });
-        };
-
-        methods.IsValidImageUrl = function (url, callback) {
-            request.get(url, (error, response, body) => {
-                callback(!error && response.statusCode === 200);
-            });
-        };
-
-        methods.getWordbreak = function (description, callback) {
-            var text = description;
-
-            var url = cf.IDEASQL.WB_URL + encodeURIComponent(text);
-//    console.log(decodeURIComponent(url));
-            (url, function (description) {
-                callback(description);
-            });
-        };
-
-        return methods;
-    };
-}());
-
-
- */

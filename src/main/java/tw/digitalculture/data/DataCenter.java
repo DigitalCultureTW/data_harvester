@@ -39,7 +39,7 @@ public class DataCenter {
 
     public DataCenter(int limit, Consumer<Boolean> callback) {
         this.queries = new ArrayList<>();
-        this.twdc = new TWDC(limit, (t) -> {
+        this.twdc = new TWDC((t) -> {
             callback.accept(t);
             this.ideasql = new IdeaSQL();
             this.queries.add(twdc);
@@ -47,17 +47,29 @@ public class DataCenter {
         });
     }
 
-    public void getResult(JSON data, Consumer<Result> callback) {
+    int count, n;
+
+    public void getResult(JSON data, int limit, Consumer<Result> callback) {
+        count = 0;
+        n = limit;
         Result result = new Result(data.$get("client"), data.$get("text"));
         System.out.println(result.query_str);
         queries.forEach((Query<Record_Query> source) -> {
-            source.query(result.query_str, (List<Record_Query> t) -> {
-                t.forEach((Record_Query rq) -> {
-                    result.record_set.add(rq);
-                    System.out.println(source.id + ", rq=" + rq.content);
+            count++;
+            if (n > 0) {
+                source.query(result.query_str, n, (List<Record_Query> t) -> {
+                    System.out.println(source.id + ":" + t.size());
+                    n -= t.size();
+                    t.forEach((Record_Query rq) -> {
+                        result.record_set.add(rq);
+                    });
+                    if (count == queries.size()) {
+                        callback.accept(result);
+                    }
                 });
-            });
+            } else {
+                callback.accept(result);
+            }
         });
-        callback.accept(result);
     }
 }

@@ -15,9 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package tw.digitalculture.data;
+package tw.digitalculture.demo;
 
-import def.dom.Globals;
 import def.dom.HTMLElement;
 import def.dom.HTMLImageElement;
 import def.js.JSON;
@@ -25,6 +24,7 @@ import static def.dom.Globals.document;
 import static def.jquery.Globals.$;
 import java.util.List;
 import java.util.function.Consumer;
+import tw.digitalculture.data.DataCenter;
 
 import tw.digitalculture.data.model.Record_Query;
 import tw.digitalculture.data.model.Result;
@@ -39,42 +39,24 @@ public class Demo {
 
     public static void main(String[] args) {
 
-        new Demo(100, (Boolean t) -> {
+        Demo demo = new Demo(10, (Boolean t) -> {
             if (t) {
                 $("#submit").attr("disable", "disable");
                 $("#submit").on("click", (e, o) -> {
                     $("#content").children().remove();
-                    String text = $("#text").val().toString();
-                    String client = "Test Client";
-                    JSON data = (JSON) JSON.parse("{\"client\":\"" + client + "\","
-                            + "\"text\":\"" + text + "\"}");
+                    JSON data = (JSON) JSON.parse("{\"client\":\"\","
+                            + "\"text\":\"" + $("#text").val() + "\"}");
 
-                    dc.getResult(data, (Result result) -> {
+                    dc.getResult(data, 20, (Result result) -> {
                         List<Record_Query> rs = result.record_set;
                         HTMLElement table = document.createElement("table");
-                        $(table).css("border", "1px solid grey").css("text-align", "left")
-                                .css("display", "block");
+
                         rs.forEach((Record_Query r) -> {
                             HTMLImageElement img = (HTMLImageElement) document.createElement("img");
                             img.src = r.img_url;
                             img.onload = (evt) -> {
-                                HTMLElement tr = document.createElement("tr");
-                                HTMLElement th_img = document.createElement("th");
-                                HTMLElement th_text = document.createElement("th");
-                                $(th_text).css("border", "1px solid grey");
-
-                                HTMLElement div_img = document.createElement("div");
-                                $(div_img).css("width", "300px").css("height", "300px")
-                                        .css("background-color", "black")
-                                        .append(img);
-                                $(img).css("width", "100%").css("height", "100%")
-                                        .css("object-fit", "contain").css("object-position", "50% 50%");
-                                HTMLElement div_text = document.createElement("div");
-                                $(div_text).text(r.content);
-                                $(th_img).append(div_img);
-                                $(th_text).append(div_text);
-                                $(tr).append(th_img).append(th_text);
-                                $(table).append(tr);
+                                Demo_TR tr = new Demo_TR(img, r.content);
+                                $(table).append(tr.tr);
                                 return null;
                             };
                         });

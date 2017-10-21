@@ -31,12 +31,11 @@ public class IDEASQL_Record extends Record {
 
     public IDEASQL_Record(JSON rec) {
         super(rec.$get("id").toString(),
-                "Foobar",
+                "",
                 rec.$get("content").toString(),
                 rec.$get("img_link").toString());
-//        ((JSON) rec.$get("detail_infos")).$get("title").toString()
-        this.detail_infos = rec.$get("detail_infos");
-        System.out.println("title = " + this.detail_infos.$get("title"));
+        this.detail_infos = (JSON) JSON.parse(rec.$get("detail_infos"));
+        this.title = ((JSON) JSON.parse(rec.$get("detail_infos"))).$get("title");
 
         this.title = this.title.replaceAll("\\n", " ");
         this.description = this.description.replaceAll("\\n", " ");
