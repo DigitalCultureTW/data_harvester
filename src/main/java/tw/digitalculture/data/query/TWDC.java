@@ -52,7 +52,7 @@ public class TWDC extends Query<Record_Query> {
                 TWDC_Record record = new TWDC_Record(
                         $(u).find("header"),
                         $(u).find("metadata"));
-                if (!record.uri.isEmpty() && FILETYPES.contains(record.filetype)) {
+                if (!record.uri.isEmpty() && FILETYPES.contains(record.filetype.toLowerCase())) {
                     dataset.add(record);
                     System.out.println(dataset.size() + ". " + record.title);
                 }
@@ -85,30 +85,4 @@ public class TWDC extends Query<Record_Query> {
         }
         callback.accept(records);
     }
-
-    /*
-    methods.refresh = function (url, callback) {
-            xml.fetch(url, (data) => {
-                var xml_records = $(data).find("record");
-                console.log("processing " + xml_records.length + " records...");
-                xml_records.each(function () {
-                    var record = new TWDC_Record(
-                            $(this).find("header"),
-                            $(this).find("metadata"));
-                    if (record.link && cf.FILETYPES.indexOf(record.filetype) > -1) {
-                        dataset.push(record);
-                        console.log(dataset.length + ". " + record.title);
-                    }
-                });
-                var resumptionToken = $(data).find('resumptionToken').text();
-                if (resumptionToken)
-                    methods.refresh(cf.TWDC.URL_TOKEN + resumptionToken, callback);
-                else {
-                    console.log("TWDC dataset initialization completed. Total records fetched: "
-                            + dataset.length);
-                    callback();
-                }
-            });
-        };
-     */
 }

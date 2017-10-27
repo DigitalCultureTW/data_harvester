@@ -27,7 +27,7 @@ public class Config {
     public static class DATA {
 
         public static List<String> FILETYPES
-                = Arrays.asList(new String[]{"jpg", "png", "JPG", "PNG"});
+                = Arrays.asList(new String[]{"jpg", "png"});
 
         public static class TWDC {
 
