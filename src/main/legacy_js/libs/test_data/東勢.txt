@@ -1,0 +1,7 @@
+query text = 東勢(100)
+total data = 21
+good url = 21
+good % = 100.00%
+
+bad links:
+

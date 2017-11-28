@@ -1,0 +1,7 @@
+query text = 太陽餅(100)
+total data = 13
+good url = 13
+good % = 100.00%
+
+bad links:
+

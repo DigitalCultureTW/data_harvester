@@ -1,0 +1,7 @@
+query text = 潭子(100)
+total data = 14
+good url = 14
+good % = 100.00%
+
+bad links:
+

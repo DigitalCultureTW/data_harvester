@@ -1,0 +1,7 @@
+query text = 湖心亭(100)
+total data = 7
+good url = 7
+good % = 100.00%
+
+bad links:
+

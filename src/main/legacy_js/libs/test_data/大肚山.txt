@@ -1,0 +1,7 @@
+query text = 大肚山(100)
+total data = 1
+good url = 1
+good % = 100.00%
+
+bad links:
+

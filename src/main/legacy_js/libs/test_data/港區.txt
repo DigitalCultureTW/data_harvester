@@ -1,0 +1,7 @@
+query text = 港區(100)
+total data = 8
+good url = 8
+good % = 100.00%
+
+bad links:
+

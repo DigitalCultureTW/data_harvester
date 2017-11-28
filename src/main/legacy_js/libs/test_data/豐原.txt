@@ -1,0 +1,7 @@
+query text = 豐原(100)
+total data = 47
+good url = 47
+good % = 100.00%
+
+bad links:
+
